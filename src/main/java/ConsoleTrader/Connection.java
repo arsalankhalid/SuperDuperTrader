@@ -29,7 +29,7 @@ public class Connection implements EWrapper {
         }
     }
 
-    void onDisconnect() {
+    private void onDisconnect() {
         m_client.eDisconnect();
     }
 
