@@ -40,24 +40,21 @@ public class RealTimeData implements EWrapper {
 
         //Create a new contract - could seperate this process into an independent class
         Contract contract = new Contract();
-        contract.m_symbol = "EUR";
-        contract.m_exchange = "IDEALPRO";
-        contract.m_secType = "CASH";
-        contract.m_currency = "USD";
 
-        //Create a TagValue list
-        Vector<TagValue> mktDataOptions = new Vector<TagValue>();
-
-        //Make a call to reqMktData to start off data retrieval with parameters:
-        //ConID - Connection Identifier
-        //Contract - the financial instrument we are requesting data on
-        //Ticks - any custom tick alues we are looking for (null in this case)
-        //Snapshot - false give us streaming data, true gives one data snapshot
-        //MarketDataOptions - tagValue list of additional options
-        client.reqMktData(0, contract, null, false, mktDataOptions);
+        contract.m_conId= 1; 	// Contract ID
+        contract.m_secType = "STK";	// Security type is a stock (STK)
+        contract.m_symbol = "MSFT";	// Microsoft stock symbol
+        contract.m_exchange = "SMART"; 	// Use IB’s Smart Order router to get the prices
+        contract.m_currency = "USD"; 	// USD Currency
 
         //at this point our call is done and any market data events
         //will be returned bia the ticket price method
+        Order order = new Order();
+        order.m_action = "BUY";
+        order.m_totalQuantity = 100;
+        order.m_orderType = "MKT";
+
+        client.placeOrder(0, contract, order);
 
     }
 
@@ -113,8 +110,11 @@ public class RealTimeData implements EWrapper {
 
     }
 
+    /*
+    new unique order id that gets triggered by interactive brokers
+     */
     public void nextValidId(int orderId) {
-
+        //Return the next valid OrderID
     }
 
     public void contractDetails(int reqId, ContractDetails contractDetails) {
@@ -233,6 +233,9 @@ public class RealTimeData implements EWrapper {
 
     }
 
+    /*
+      Overloaded set of errors, to handle different type of error responses
+    */
     public void error(Exception e) {
 
     }
