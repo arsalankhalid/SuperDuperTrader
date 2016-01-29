@@ -18,7 +18,33 @@ public class Connection implements EWrapper {
     public static void main(String[] args) {
         Connection connection = new Connection();
         connection.onConnect();
-        connection.onDisconnect();
+
+        if(connection.m_client.isConnected()) {
+            System.out.println("Inside control logic");
+            //Submit orders here
+            Contract contract = new Contract();
+            contract.m_symbol = "DIS";
+            contract.m_secType = "STK";
+            contract.m_right = "None";
+            contract.m_exchange = "SMART";
+            contract.m_primaryExch = "ISLAND";
+            contract.m_currency = "USD";
+            System.out.println(contract.m_symbol);
+
+            Order order = new Order();
+            order.m_account = "DU314318";
+            order.m_orderId = 341;
+            order.m_orderType = "MKT";
+            order.m_totalQuantity = 400;
+            order.m_tif = "DAY";
+            order.m_action = "BUY";
+            System.out.println(order.m_account);
+
+            connection.m_client.placeOrder(341,contract,order);
+            connection.m_client.cancelOrder(341);
+            connection.onDisconnect();
+        }
+
     }
 
     private void onConnect() {
@@ -65,17 +91,20 @@ public class Connection implements EWrapper {
 
     @Override
     public void orderStatus(int orderId, String status, int filled, int remaining, double avgFillPrice, int permId, int parentId, double lastFillPrice, int clientId, String whyHeld) {
-
+        System.out.println(EWrapperMsgGenerator.orderStatus( orderId, status, filled, remaining,
+                avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld) + "in order status");
     }
 
     @Override
     public void openOrder(int orderId, Contract contract, Order order, OrderState orderState) {
-
+        //received open order
+       System.out.println(EWrapperMsgGenerator.openOrder( orderId, contract, order, orderState) + "in open order");
     }
 
     @Override
     public void openOrderEnd() {
-
+        //Received open order end
+        System.out.println(EWrapperMsgGenerator.openOrderEnd() + "in open order end");
     }
 
     @Override
